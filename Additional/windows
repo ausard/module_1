@@ -3,4 +3,7 @@ Open Start > Control Panel > Programs.
 Select Turn Windows Features on or off.
 Select Services for NFS. Click OK.
 
-mount 192.168.50.3:/var/share r:
+adding NFS_client.reg to Registry
+
+in cmd
+mount 192.168.50.3:/files r:
