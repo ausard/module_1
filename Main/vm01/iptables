@@ -1,0 +1,38 @@
+iptables -L
+Chain INPUT (policy DROP)
+target     prot opt source               destination
+ACCEPT     all  --  192.168.33.0/24      vm01
+ACCEPT     all  --  vm01                 vm01
+ACCEPT     all  --  192.168.33.12        vm01
+ACCEPT     all  --  anywhere             anywhere
+ACCEPT     all  --  anywhere             vm01                 state RELATED,ESTABLISHED
+
+Chain FORWARD (policy ACCEPT)
+target     prot opt source               destination
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination
+
+Chain allowed (4 references)
+target     prot opt source               destination
+ACCEPT     tcp  --  anywhere             anywhere             tcp flags:FIN,SYN,RST,ACK/SYN
+ACCEPT     tcp  --  anywhere             anywhere             state RELATED,ESTABLISHED
+DROP       tcp  --  anywhere             anywhere
+
+Chain bad_tcp_packets (0 references)
+target     prot opt source               destination
+REJECT     tcp  --  anywhere             anywhere             tcp flags:SYN,ACK/SYN,ACK state NEW reject-with tcp-reset
+LOG        tcp  --  anywhere             anywhere             tcp flags:!FIN,SYN,RST,ACK/SYN state NEW LOG level warning prefix "New not syn:"
+DROP       tcp  --  anywhere             anywhere             tcp flags:!FIN,SYN,RST,ACK/SYN state NEW
+
+Chain icmp_packets (0 references)
+target     prot opt source               destination
+ACCEPT     icmp --  anywhere             anywhere             icmp echo-request
+ACCEPT     icmp --  anywhere             anywhere             icmp time-exceeded
+
+Chain tcp_packets (0 references)
+target     prot opt source               destination
+allowed    tcp  --  anywhere             anywhere             tcp dpt:ftp
+allowed    tcp  --  anywhere             anywhere             tcp dpt:ssh
+allowed    tcp  --  anywhere             anywhere             tcp dpt:http
+allowed    tcp  --  anywhere             anywhere             tcp dpt:auth
