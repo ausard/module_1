@@ -1,0 +1,6 @@
+First, we will enable NFS modules or features on Windows operating systems.
+Open Start > Control Panel > Programs.
+Select Turn Windows Features on or off.
+Select Services for NFS. Click OK.
+
+mount 192.168.50.3:/var/share r:

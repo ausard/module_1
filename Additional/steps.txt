@@ -1,0 +1,34 @@
+yum install nfs-kermel-server -y
+yum install nfs-utils -y
+mkdir /var/share
+
+
+#create user
+adduser toor
+passwd toor
+
+
+chown toor:toor /var/share
+chmod 755 /var/share
+touch /var/share/test-test.txt
+
+systemctl enable rpcbind
+systemctl enable nfs-server
+systemctl enable nfs-lock
+systemctl enable nfs-idmap
+
+systemctl start rpcbind
+systemctl start nfs-server
+systemctl start nfs-lock
+systemctl start nfs-idmap
+
+echo "/var/share	192.168.50.0/24(rw,all_squash,anonuid=1000,anongid=1000)" > /etc/exports
+
+exportfs -a
+
+systemctl restart nfs-server
+
+firewall-cmd --permanent --zone=public --add-service=nfs
+firewall-cmd --permanent --zone=public --add-service=mountd
+firewall-cmd --permanent --zone=public --add-service=rpc-bind
+firewall-cmd --reload
